@@ -1,42 +1,61 @@
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { createContext, useContext, useEffect, useState } from "react";
-import { auth, signInWithEmailAndPassword} from "../firebase";
+import React, { createContext, useEffect, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-const AuthContext = createContext();
+import { auth, db, logout } from "../firebase";
+import { query, collection, getDocs, where } from "firebase/firestore";
 
-const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState();
-  const [loading, setLoading] = useState(true);
-  const signup = (email, password) => {
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-        // User creation successful
-        const user = userCredential.user;
-      })
-      .catch((error) => {
-        // Handle error
-      });
-  };
+// Create a new context for user information
+export const UserContext = createContext(null);
+
+const UserProvider = ({ children }) => {
+  const [user, loading] = useAuthState(auth);
+  const [name, setName] = useState("");
+  const [token, setToken] = useState("");
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (loading) return;
+    if (!user) return;
 
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return () => {
-      unsubscribe();
+    // Fetch user information
+    const fetchUserName = async () => {
+      try {
+        const q = query(collection(db, "users"), where("uid", "==", user?.uid));
+        const doc = await getDocs(q);
+        const data = doc.docs[0].data();
+        setName(data.name);
+      } catch (err) {
+        alert("An error occurred while fetching user data");
+      }
     };
-  }, []);
+
+    fetchUserName();
+  }, [user, loading]);
+
+  useEffect(() => {
+    if (user) {
+      user.getIdToken().then((token) => {
+        setToken(token);
+      });
+    }
+  }, [user]);
+
+  const logoutUser = () => {
+    setToken(null);
+
+    logout();
+  };
+
+  const userContextValue = {
+    user,
+    name,
+    token,
+    logoutUser,
+  };
+
   return (
-    <AuthContext.Provider value={{ currentUser, signup }}>
-      {!loading && children}
-    </AuthContext.Provider>
+    <UserContext.Provider value={userContextValue}>
+      {children}
+    </UserContext.Provider>
   );
 };
-export default AuthProvider;
-export const useAuth = () => {
-  return useContext(AuthContext);
-};
+
+export default UserProvider;

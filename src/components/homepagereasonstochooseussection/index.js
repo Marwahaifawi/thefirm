@@ -2,49 +2,11 @@ import React, { useState } from "react";
 import { Stack, CardMedia } from "@mui/material";
 import { Typography } from "@mui/material";
 import ButtonApp from "../../shared/button";
-import Branding from "../../assets/brandingImg.png";
-import BrandingIcon from "../../assets/branding.svg";
-import Reporting from "../../assets/reporting.png";
-import ReportingIcon from "../../assets/reportingicon.svg";
-import MarketResearch from "../../assets/marhetresearch.png";
-import MarketSearchingIcon from "../../assets/marketresearchicon.svg";
-import DataAnalysis from "../../assets/dataanalysis.png";
-import DataAnalysisIcon from "../../assets/dataanalysisIcon.svg";
+import reasons from "./reasonsData";
 
 const ReasonsToChooseUs = () => {
   const [clicked, setClicked] = useState(0);
   const [expanded, setExpanded] = useState(false);
-
-  const reasons = [
-    {
-      name: "Market Research",
-      icon: MarketSearchingIcon,
-      image: MarketResearch,
-      description:
-        "Market research helps you gain valuable insights into your target audience's preferences, needs, and behaviors. By conducting research, you can identify your target market's demographics, interests, and purchasing habits, enabling you to tailor your products or services to meet their specific demands.",
-    },
-    {
-      name: "Branding",
-      icon: BrandingIcon,
-      image: Branding,
-      description:
-        "Our firm specializes in creating professional and visually appealing websites that align with your brand identity. We understand the importance of a strong brand presence and design websites that reflect your company's values, mission, and unique selling points.",
-    },
-    {
-      name: "Reporting",
-      icon: ReportingIcon,
-      image: Reporting,
-      description:
-        "Reports enable businesses to track their progress towards set goals and objectives. By comparing actual performance against targets, reports highlight areas where the business is excelling and areas that require improvement.",
-    },
-    {
-      name: "Data Analysis",
-      icon: DataAnalysisIcon,
-      image: DataAnalysis,
-      description:
-        "Data analysis provides valuable information that helps businesses make informed decisions. By analyzing data patterns, trends, and correlations, organizations can identify opportunities, anticipate market shifts, and make strategic choices to optimize their operations and achieve their goals.",
-    },
-  ];
 
   const handleReadMore = () => {
     setExpanded(!expanded); // Toggle the expanded state

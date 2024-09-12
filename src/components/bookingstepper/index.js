@@ -4,7 +4,6 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -50,8 +49,7 @@ const steps = [
   },
 ];
 
-const BookingStepper = ({ onClose, solutionTitle }) => {
-  console.log(solutionTitle);
+const BookingStepper = ({ onClose, solutionTitle, setOpen , user }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [activeStep, setActiveStep] = useState(0);
@@ -75,6 +73,7 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
         createAppointment(appointmentData)
           .then(() => {
             // Successful API call, perform any necessary actions (e.g., show a success message)
+            setOpen(true);
             onClose();
           })
           .catch((error) => {
@@ -110,8 +109,10 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
     appointmentData = {
       ...appointmentData,
       solutionTitle: solutionTitle,
+      name: user.name, // Assuming the user object contains the name
+      email: user.email, // Assuming the user object contains the email
     };
-
+  
     return axios.post(apiUrl, appointmentData, { headers });
   };
 
@@ -164,13 +165,13 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
                     Back
                   </ButtonApp>
                   <Box sx={{ flex: "1 1 auto" }} />
-                  <Button
+                  <ButtonApp
                     variant="contained"
                     onClick={handleNext}
                     sx={{ mt: 1, mr: 1 }}
                   >
                     {index === steps.length - 1 ? "Finish" : "Next"}
-                  </Button>
+                  </ButtonApp>
                 </Box>
               </StepContent>
             </Step>
@@ -201,7 +202,6 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
                       value={appointmentData[field.name] || ""}
                       onChange={handleInputChange}
                       name={field.name}
-                      required
                     >
                       {steps[activeStep].menuItems.map((item) => (
                         <MenuItem key={item.value} value={item.value}>
@@ -220,7 +220,6 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
                     onChange={handleInputChange}
                     fullWidth
                     margin="normal"
-                    required
                     error={!!fieldErrors[field.name]}
                     helperText={fieldErrors[field.name]}
                   />
@@ -236,9 +235,13 @@ const BookingStepper = ({ onClose, solutionTitle }) => {
                 >
                   Back
                 </ButtonApp>
-                <Button variant="contained" onClick={handleNext} sx={{ mt: 1 }}>
+                <ButtonApp
+                  variant="contained"
+                  onClick={handleNext}
+                  sx={{ mt: 1 }}
+                >
                   {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                </Button>
+                </ButtonApp>
               </Box>
             </Box>
           )}

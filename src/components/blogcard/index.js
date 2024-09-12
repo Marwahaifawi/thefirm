@@ -1,15 +1,11 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import Avatar from "@mui/material/Avatar";
-import CardHeader from "@mui/material/CardHeader";
-const BlogCard = ({ image, name, description, avatar, date, title, link }) => {
+import { Card, CardContent, CardMedia, Typography, Divider, Avatar, CardHeader } from "@mui/material";
+
+const BlogCard = ({ blog }) => {
   const handleClick = () => {
-    window.open(link, "_blank");
+    window.open(blog.link, "_blank");
   };
+
   return (
     <Card
       className="clickable"
@@ -21,13 +17,12 @@ const BlogCard = ({ image, name, description, avatar, date, title, link }) => {
         display: "flex",
         flexDirection: "column",
         height: "100%",
-        cursor: "pointer",
       }}
     >
-      <CardMedia sx={{ height: 300, borderRadius: 1 }} image={image} />
+      <CardMedia sx={{ height: 300, borderRadius: 1 }} image={blog.image} />
       <CardContent>
         <Typography gutterBottom variant="h5">
-          {title}
+          {blog.title}
         </Typography>
         <Typography
           gutterBottom
@@ -35,13 +30,13 @@ const BlogCard = ({ image, name, description, avatar, date, title, link }) => {
           lineHeight={2}
           color="text.secondary"
         >
-          {description}
+          {blog.description}
         </Typography>
         <Divider variant="middle" />
         <CardHeader
-          avatar={<Avatar alt="name" src={avatar} />}
-          title={name}
-          subheader={date}
+          avatar={<Avatar alt={blog.name} src={blog.avatar} />}
+          title={blog.name}
+          subheader={blog.date}
           sx={{
             "@media (max-width: 800px)": {
               display: "flex",
@@ -55,4 +50,5 @@ const BlogCard = ({ image, name, description, avatar, date, title, link }) => {
     </Card>
   );
 };
+
 export default BlogCard;

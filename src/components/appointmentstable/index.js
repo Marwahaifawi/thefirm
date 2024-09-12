@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Table,
   TableBody,
@@ -10,25 +10,26 @@ import {
   IconButton,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
 import axios from "axios";
 import api from "../../api/api";
+import { UserContext } from "../../shared/authcontext";
 
 const AppointmentsTable = () => {
+  const { user } = useContext(UserContext);
   const [appointments, setAppointments] = useState([]);
 
   const getAppointments = async () => {
     try {
-      const response = await api.get("/appointments");
+      const response = await api.get(`/appointments?email=${user.email}`);
       setAppointments(response.data);
     } catch (error) {
-      console.error("Error fetching appointments:", error);
+      // console.error("Error fetching appointments:", error);
     }
   };
 
   useEffect(() => {
     getAppointments();
-  }, []);
+  }, [user]);
 
   const handleDelete = (id) => {
     const apiUrl = `http://localhost:3006/appointments/${id}`;
@@ -39,7 +40,7 @@ const AppointmentsTable = () => {
         getAppointments();
       })
       .catch((error) => {
-        console.error("Error deleting appointment:", error);
+        // console.error("Error deleting appointment:", error);
       });
   };
 
@@ -66,10 +67,7 @@ const AppointmentsTable = () => {
               <TableCell>{appointment.time}</TableCell>
               <TableCell>{appointment.additionalInfo}</TableCell>
               <TableCell>{appointment.phone}</TableCell>
-              <TableCell>
-                <IconButton>
-                  <EditIcon />
-                </IconButton>
+              <TableCell>  
                 <IconButton
                   color="error"
                   onClick={() => handleDelete(appointment.id)}

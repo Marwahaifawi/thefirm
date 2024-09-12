@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import Stack from "@mui/material/Stack";
 import Modal from "@mui/material/Modal";
@@ -6,6 +6,7 @@ import Fade from "@mui/material/Fade";
 import Typography from "@mui/material/Typography";
 import ButtonApp from "../../shared/button";
 import BookingStepper from "../bookingstepper";
+import { UserContext } from "../../shared/authcontext";
 
 const style = {
   position: "absolute",
@@ -16,21 +17,27 @@ const style = {
   boxShadow: 24,
 };
 
-const BookingModal = ({ solutionTitle }) => {
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+const BookingModal = ({ solutionTitle, setOpen }) => {
+  const [opens, setOpens] = React.useState(false);
+  const handleOpen = () => {
+    if (user) {
+      setOpens(true);
+    } else {
+      alert("Please Sign in");
+    }
+  };
+  const handleClose = () => setOpens(false);
+  const { user } = useContext(UserContext); // Access the user context
 
   return (
     <div>
       <ButtonApp onClick={handleOpen} variant={"contained"}>
         Book Now
       </ButtonApp>
-
       <Modal
         aria-labelledby="transition-modal-title"
         aria-describedby="transition-modal-description"
-        open={open}
+        open={opens}
         onClose={handleClose}
         closeAfterTransition
         slots={{ backdrop: Backdrop }}
@@ -40,7 +47,7 @@ const BookingModal = ({ solutionTitle }) => {
           },
         }}
       >
-        <Fade in={open}>
+        <Fade in={opens}>
           <Stack p={4} sx={style} width={"50%"} height={"75%"}>
             <Typography
               color={"primary"}
@@ -53,6 +60,8 @@ const BookingModal = ({ solutionTitle }) => {
             <BookingStepper
               onClose={handleClose}
               solutionTitle={solutionTitle}
+              setOpen={setOpen}
+              user={user}
             />
           </Stack>
         </Fade>

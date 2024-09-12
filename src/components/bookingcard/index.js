@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import { Box } from "@mui/material";
 import BookingModal from "../bookingmodal";
-const BookingCard = ({ image, description, title }) => {
+const BookingCard = ({ image, description, title , setOpen }) => {
   return (
     <Card
       sx={{
@@ -27,7 +27,7 @@ const BookingCard = ({ image, description, title }) => {
         </Typography>
         <Divider variant="middle" />
         <Box sx={{ marginTop: 2, display: "flex", justifyContent: "center" }}>
-          <BookingModal solutionTitle={title} />
+          <BookingModal setOpen={setOpen} solutionTitle={title} />
         </Box>
       </CardContent>
     </Card>

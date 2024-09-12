@@ -1,35 +1,24 @@
 import { Container, Stack, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useContext } from "react";
 import AppointmentsTable from "../../components/appointmentstable";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, db } from "../../firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { UserContext } from "../../shared/authcontext";
 
 const AppointmentsPage = () => {
-  const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState("");
-  const navigate = useNavigate();
+  const { user, loading } = useContext(UserContext);
 
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    } catch (err) {
-      alert("An error occurred while fetching user data");
-    }
-  };
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (loading) return;
-    if (user) {
-      fetchUserName();
-    } else {
-        navigate("/login"); 
+    if (!user) {
+      navigate("/login");
     }
-  }, [user, loading, navigate ]);
+  }, [user, loading, navigate]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Stack>
@@ -43,7 +32,7 @@ const AppointmentsPage = () => {
         Your Appointments
       </Typography>
       <Container mt={5}>
-        <AppointmentsTable/>
+        <AppointmentsTable />
       </Container>
     </Stack>
   );

@@ -14,41 +14,48 @@ const CasesFilter = () => {
     []
   );
   const [cases, setCases] = useState([]);
-  const [filteredCases, setFilteredCases] = useState([]); // State for filtered cases
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
-  const getCases = async () => {
-    const response = await api.get("/cases");
-    return response.data;
-  };
+  const [filteredCases, setFilteredCases] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
-    const getAllCases = async () => {
-      const allCases = await getCases();
-      if (allCases) {
+    const getCasesData = async () => {
+      try {
+        const response = await api.get("/cases");
+        const allCases = response.data;
         setCases(allCases);
-        setFilteredCases(allCases); // Set initial filtered cases to all cases
+        setFilteredCases(allCases);
+      } catch (error) {
+        // console.error("Error retrieving cases:", error);
       }
     };
-    getAllCases();
+
+    getCasesData();
   }, []);
 
   useEffect(() => {
-    if (clicked === 0) {
-      // Show All filter selected, set filtered cases to all cases
-      setFilteredCases(cases);
-    } else {
-      // Filter cases based on the selected solution
-      const filtered = cases.filter((item) => item.solution === filters[clicked]);
-      setFilteredCases(filtered);
-    }
+    const filterCases = () => {
+      if (clicked === 0) {
+        setFilteredCases(cases);
+      } else {
+        const filtered = cases.filter(
+          (item) => item.solution === filters[clicked]
+        );
+        setFilteredCases(filtered);
+      }
+    };
+
+    filterCases();
   }, [clicked, cases, filters]);
 
   useEffect(() => {
-    // Filter cases based on search query
-    const filtered = cases.filter((item) =>
-      item.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredCases(filtered);
+    const searchCases = () => {
+      const filtered = cases.filter((item) =>
+        item.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredCases(filtered);
+    };
+
+    searchCases();
   }, [searchQuery, cases]);
 
   const handleSearchChange = (event) => {
@@ -87,12 +94,7 @@ const CasesFilter = () => {
         <Grid
           mt={4}
           container
-          alignItems={{
-            xs: "center",
-            sm: "center",
-            md: "stretch",
-            lg: "stretch",
-          }}
+          alignItems="center"
           direction={{ md: "row", lg: "row" }}
           spacing={5}
           columns={{ xs: 4, sm: 8, md: 12 }}

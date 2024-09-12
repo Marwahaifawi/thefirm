@@ -17,12 +17,12 @@ import {
   addDoc,
 } from "firebase/firestore";
 const firebaseConfig = {
-  apiKey: "AIzaSyBIj2GOoCIO7KyhUVpJXLoYjpHj_veSiHw",
-  authDomain: "thefirmauth.firebaseapp.com",
-  projectId: "thefirmauth",
-  storageBucket: "thefirmauth.appspot.com",
-  messagingSenderId: "416538992226",
-  appId: "1:416538992226:web:9c3917879f76476f75fb3b",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
   measurementId: "G-H1V5B9R82C",
 };
 const app = initializeApp(firebaseConfig);

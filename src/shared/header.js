@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useAuthState } from "react-firebase-hooks/auth";
+import React, { useContext , useState } from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -17,11 +16,12 @@ import ButtonApp from "./button";
 import NavBar from "../components/navbar";
 import { Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { auth, db, logout } from "../firebase";
-import { query, collection, getDocs, where } from "firebase/firestore";
+import { UserContext } from "./authcontext";
 
 const HeaderApp = (props) => {
   const navigate = useNavigate();
+  const { user, logoutUser } = useContext(UserContext);
+
   const { window } = props;
   const [mobileOpen, setMobileOpen] = useState(false);
   const drawerWidth = 240;
@@ -31,29 +31,6 @@ const HeaderApp = (props) => {
     { text: "Cases", link: "/casesPage" },
     { text: "Appointments", link: "/Appointments" },
   ];
-  const [user, loading] = useAuthState(auth);
-  const [name, setName] = useState("");
-  const fetchUserName = async () => {
-    try {
-      const q = query(collection(db, "users"), where("uid", "==", user?.uid));
-      const doc = await getDocs(q);
-      const data = doc.docs[0].data();
-      setName(data.name);
-    } catch (err) {
-      alert("An error occurred while fetching user data");
-    }
-  };
-
-  const logoutUser = () => {
-    logout();
-    navigate("/login");
-  };
-
-  useEffect(() => {
-    if (loading) return;
-    if (!user) return navigate("/login");
-    fetchUserName();
-  }, [user, loading]);
 
   const handleSignUpClick = () => {
     navigate("/signup");

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useContext } from "react";
 import { useForm } from "react-hook-form";
 import TextField from "@mui/material/TextField";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -13,20 +13,27 @@ import { Divider, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { logInWithEmailAndPassword } from "../../firebase";
-import { auth } from "../../firebase";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { UserContext } from "../../shared/authcontext";
+
 const Login = () => {
   const navigate = useNavigate();
   const { register } = useForm();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [user] = useAuthState(auth);
+  const [rememberMe, setRememberMe] = useState(false);
+  const { user } = useContext(UserContext);
   const handleSignUpClick = () => {
     navigate("/signup");
   };
+  const handleResetClick = () => {
+    navigate("/resetpassword");
+  };
   useEffect(() => {
-    if (user) navigate("/");
-  }, [user]);
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   return (
     <Container maxWidth="xs">
       <Stack alignItems="center" mt={30} mb={30} direction="column">
@@ -71,7 +78,7 @@ const Login = () => {
                 }}
               />
 
-              <Grid item xs fullWidth>
+              <Grid item xs>
                 <Stack
                   direction="row"
                   alignItems="center"
@@ -79,10 +86,20 @@ const Login = () => {
                   mt={1}
                 >
                   <FormControlLabel
-                    control={<Checkbox value="remember" color="primary" />}
+                    control={
+                      <Checkbox
+                        value={rememberMe}
+                        color="primary"
+                        onChange={(e) => setRememberMe(e.target.checked)}
+                      />
+                    }
                     label="Remember me"
                   />
-                  <Link href="#" variant="body2">
+                  <Link
+                    className="clickable"
+                    onClick={handleResetClick}
+                    variant="body2"
+                  >
                     Forgot password?
                   </Link>
                 </Stack>
@@ -90,7 +107,7 @@ const Login = () => {
             </Grid>
             <Grid item>
               <ButtonApp
-                onClick={() => logInWithEmailAndPassword(email, password)}
+                onClick={() =>logInWithEmailAndPassword(email, password) }
                 type="submit"
                 variant="contained"
               >

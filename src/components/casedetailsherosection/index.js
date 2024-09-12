@@ -2,6 +2,7 @@ import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import ButtonApp from "../../shared/button";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   img: {
@@ -23,7 +24,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 const CaseDetailsHeroSection = ({ caseName, description, image }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
 
+  const goToSolutionsPage = () => {
+    navigate("/solutions");
+  };
   return (
     <Stack
       spacing={5}
@@ -43,8 +48,8 @@ const CaseDetailsHeroSection = ({ caseName, description, image }) => {
           {description}
         </Typography>
         <Stack direction={{ lg: "row", md: "row", sm: "column" }} spacing={2}>
-          <ButtonApp variant={"contained"}> Digital Partner</ButtonApp>
-          <ButtonApp variant={"contained"}> Coaching</ButtonApp>
+          <ButtonApp onClick={goToSolutionsPage} variant={"contained"}> Digital Partner</ButtonApp>
+          <ButtonApp onClick={goToSolutionsPage} variant={"contained"}> Coaching</ButtonApp>
         </Stack>
       </Stack>
       <Stack alignItems="center" width={"50%"}>

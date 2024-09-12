@@ -1,19 +1,20 @@
 import React, { useRef, useState, useEffect } from "react";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
+import {
+  TextField,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  Divider,
+  Stack,
+} from "@mui/material";
 import ButtonApp from "../../shared/button";
-import { Divider, Stack } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
-import {
-  auth,
-  registerWithEmailAndPassword,
-} from "../../firebase";
-export default function SignUp() {
+import { auth, registerWithEmailAndPassword } from "../../firebase";
+
+const SignUp = () => {
   const navigate = useNavigate();
   const fullNameRef = useRef();
   const emailRef = useRef();
@@ -23,13 +24,13 @@ export default function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const [name, setName] = useState("");
-  const [passwordsMatch, setPasswordsMatch] = useState(true); // State to track if passwords match
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const [user, loading] = useAuthState(auth);
 
-  const [user, loading, error] = useAuthState(auth);
   useEffect(() => {
     if (loading) return;
     if (user) navigate("/");
-  }, [user, loading]);
+  }, [user, loading, navigate]);
 
   const handleSignInClick = () => {
     navigate("/login");
@@ -70,7 +71,7 @@ export default function SignUp() {
                   boxShadow: "0px 5px 15px -3px rgba(60, 60, 59, 0.18)",
                   borderColor: "primary.main",
                 }}
-                ref={fullNameRef}
+                inputRef={fullNameRef}
                 onChange={(e) => setName(e.target.value)}
               />
             </Grid>
@@ -81,7 +82,7 @@ export default function SignUp() {
                 id="Email"
                 label="Enter your email address"
                 name="Email"
-                ref={emailRef}
+                inputRef={emailRef}
                 onChange={(e) => setEmail(e.target.value)}
                 sx={{
                   borderLeft: "5px solid",
@@ -99,7 +100,7 @@ export default function SignUp() {
                 label="Enter your password"
                 name="password"
                 type="password"
-                ref={passwordRef}
+                inputRef={passwordRef}
                 onChange={(e) => setPassword(e.target.value)}
                 sx={{
                   borderLeft: "5px solid",
@@ -117,9 +118,9 @@ export default function SignUp() {
                 label="Confirm password"
                 type="password"
                 id="confirmedPassword"
-                ref={passwordConfirmedRef}
+                inputRef={passwordConfirmedRef}
                 onChange={(e) => setConfirmedPassword(e.target.value)}
-                error={!passwordsMatch} // Show error state if passwords do not match
+                error={!passwordsMatch}
                 helperText={!passwordsMatch && "Passwords do not match"}
                 sx={{
                   borderLeft: "5px solid",
@@ -160,4 +161,6 @@ export default function SignUp() {
       </Stack>
     </Container>
   );
-}
+};
+
+export default SignUp;

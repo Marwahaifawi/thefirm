@@ -1,29 +1,39 @@
-import {Stack, Typography } from "@mui/material";
-import React, { useState  , useEffect} from "react";
+import React, { useState, useEffect } from "react";
+import { Stack, Typography } from "@mui/material";
+import { Swiper, SwiperSlide } from "swiper/react";
+import SwiperCore, { Pagination } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
-import styles from "./index.module.css";
 import api from "../../api/api";
-import { Pagination } from "swiper";
+import styles from "./index.module.css";
+
+SwiperCore.use([Pagination]);
 
 const OurTestimonials = () => {
   const [activeSlideIndex, setActiveSlideIndex] = useState(1);
   const [testimonials, setTestimonials] = useState([]);
+
   const getTestimonials = async () => {
-    const response = await api.get("/testimonials");
-    return response.data;
+    try {
+      const response = await api.get("/testimonials");
+      return response.data;
+    } catch (error) {
+      // console.error("Error retrieving testimonials:", error);
+    }
   };
+
   useEffect(() => {
-    const getAllTestimonials = async () => {
-      const allBlogs = await getTestimonials();
-      if (allBlogs) setTestimonials(allBlogs);
+    const fetchTestimonials = async () => {
+      const allTestimonials = await getTestimonials();
+      if (allTestimonials) setTestimonials(allTestimonials);
     };
-    getAllTestimonials();
+    fetchTestimonials();
   }, []);
+
   const handleSlideChange = (swiper) => {
-    setActiveSlideIndex(swiper.activeIndex + 1);
+    setActiveSlideIndex(swiper.activeIndex +1);
   };
+
   return (
     <Stack mt={20}>
       <Typography variant="h4" textAlign="center">
@@ -31,11 +41,10 @@ const OurTestimonials = () => {
       </Typography>
       <Swiper
         slidesPerView={3}
-        spaceBetween={"10%"}
+        spaceBetween="10%"
         pagination={{
           clickable: true,
         }}
-        modules={[Pagination]}
         className={styles.swiper}
         onSlideChange={handleSlideChange}
       >
@@ -53,7 +62,7 @@ const OurTestimonials = () => {
               }`}
             >
               <img alt="testimonialImg" src={item.image} />
-              <Typography width={"90%"} variant="caption" textAlign="center">
+              <Typography width="90%" variant="caption" textAlign="center">
                 {item.description}
               </Typography>
             </Stack>
